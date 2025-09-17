@@ -38,6 +38,12 @@ keymap.set("n", "<leader>cp", "<cmd>CopilotChatToggle<cr>", { desc = "CopilotCha
 keymap.set("v", "<leader>cv", ":CopilotChatVisual<cr>", { desc = "CopilotChat - Chat with visual selection" })
 keymap.set("n", "<leader>ci", ":CopilotChatInline<cr>", { desc = "CopilotChat - Quick inline chat" })
 
+-- File explorer refresh
+keymap.set("n", "<leader>er", "<cmd>NvimTreeRefresh<cr>", { desc = "Refresh file explorer" })
+keymap.set("n", "<leader>ee", "<cmd>NvimTreeToggle<cr>", { desc = "Toggle file explorer" })
+keymap.set("n", "<leader>ef", "<cmd>NvimTreeFindFile<cr>", { desc = "Find file in explorer" })
+keymap.set("n", "<leader>ec", "<cmd>NvimTreeCollapse<cr>", { desc = "Collapse explorer" })
+
 -- Copilot suggestion keymaps
 keymap.set("i", "<C-y>", function()
   require("copilot.suggestion").accept()

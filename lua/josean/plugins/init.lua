@@ -6,6 +6,7 @@ return {
   -- { import = "josean.plugins.bufferline" },
   -- { import = "josean.plugins.telescope" },
   -- { import = "josean.plugins.nvim-tree" },
+  -- { import = "josean.plugins.spectre-simple" },
   -- { import = "josean.plugins.which-key" },
   -- { import = "josean.plugins.colorscheme" },
   -- { import = "josean.plugins.autopairs" },
