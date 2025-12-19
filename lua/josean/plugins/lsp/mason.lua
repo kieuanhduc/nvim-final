@@ -47,18 +47,19 @@ return {
 
     mason_tool_installer.setup({
       ensure_installed = {
-        -- Formatters
-        "prettier", -- JS, TS, HTML, CSS formatter
-        "stylua",  -- Lua formatter
-        "shfmt",   -- shell formatter
-        "php-cs-fixer", -- PHP formatter
-        -- Linters
-        "eslint_d", -- JS/TS linter
-        "shellcheck", -- shell linter
-      
-        "jsonlint", -- json linter
+        -- Formatters (sẽ tự động cài)
+        "prettier",    -- JS, TS, HTML, CSS, JSON formatter
+        "stylua",      -- Lua formatter
+        -- "shfmt",    -- Shell formatter (optional)
+        -- "php-cs-fixer", -- PHP formatter (optional)
+        
+        -- Linters (optional - comment nếu không cần)
+        -- "eslint_d",    -- JS/TS linter
+        -- "shellcheck",  -- Shell linter
+        
+        -- Note: jsonlint không có trong Mason registry
       },
-      auto_update = true,
+      auto_update = false,      -- Đổi false để tránh auto update
       run_on_start = true,
     })
   end,

@@ -25,38 +25,46 @@ keymap.set("n", "<leader>tf", "<cmd>tabnew %<CR>", { desc = "Open current buffer
 -- File explorer - chỉ giữ lại keymaps không bị overlap
 keymap.set("n", "<leader>E", "<cmd>NvimTreeFocus<cr>", { desc = "Focus file explorer" })
 
--- Copilot keymaps
-keymap.set("n", "<leader>cc", "<cmd>CopilotChatCommit<cr>", { desc = "CopilotChat - Generate commit message" })
-keymap.set("n", "<leader>cs", "<cmd>CopilotChatCommitStaged<cr>", { desc = "CopilotChat - Generate commit message for staged changes" })
-keymap.set("n", "<leader>cd", "<cmd>CopilotChatFixDiagnostic<cr>", { desc = "CopilotChat - Fix diagnostic" })
-keymap.set("n", "<leader>ce", "<cmd>CopilotChatExplain<cr>", { desc = "CopilotChat - Explain code" })
-keymap.set("n", "<leader>cr", "<cmd>CopilotChatReview<cr>", { desc = "CopilotChat - Review code" })
-keymap.set("n", "<leader>cf", "<cmd>CopilotChatFix<cr>", { desc = "CopilotChat - Fix code" })
-keymap.set("n", "<leader>co", "<cmd>CopilotChatOptimize<cr>", { desc = "CopilotChat - Optimize code" })
-keymap.set("n", "<leader>ct", "<cmd>CopilotChatTests<cr>", { desc = "CopilotChat - Generate tests" })
-keymap.set("n", "<leader>cp", "<cmd>CopilotChatToggle<cr>", { desc = "CopilotChat - Toggle chat panel" })
-keymap.set("v", "<leader>cv", ":CopilotChatVisual<cr>", { desc = "CopilotChat - Chat with visual selection" })
-keymap.set("n", "<leader>ci", ":CopilotChatInline<cr>", { desc = "CopilotChat - Quick inline chat" })
-
--- File explorer refresh
+-- File explorer shortcuts
 keymap.set("n", "<leader>er", "<cmd>NvimTreeRefresh<cr>", { desc = "Refresh file explorer" })
 keymap.set("n", "<leader>ee", "<cmd>NvimTreeToggle<cr>", { desc = "Toggle file explorer" })
 keymap.set("n", "<leader>ef", "<cmd>NvimTreeFindFile<cr>", { desc = "Find file in explorer" })
 keymap.set("n", "<leader>ec", "<cmd>NvimTreeCollapse<cr>", { desc = "Collapse explorer" })
 
--- Copilot suggestion keymaps
-keymap.set("i", "<C-y>", function()
-  require("copilot.suggestion").accept()
-end, { desc = "Accept Copilot suggestion" })
+-- Simple git commit message helper (thay thế Copilot)
+keymap.set("n", "<leader>cc", function()
+  -- Get git diff
+  local diff = vim.fn.system("git diff --cached --stat")
+  if diff == "" then
+    vim.notify("No staged changes. Stage files first with: git add", vim.log.levels.WARN)
+    return
+  end
+  
+  -- Simple commit message prompt
+  vim.ui.input({ prompt = "Commit message: " }, function(msg)
+    if msg and msg ~= "" then
+      local result = vim.fn.system(string.format('git commit -m "%s"', msg))
+      if vim.v.shell_error == 0 then
+        vim.notify("✅ Committed: " .. msg, vim.log.levels.INFO)
+      else
+        vim.notify("❌ Commit failed: " .. result, vim.log.levels.ERROR)
+      end
+    end
+  end)
+end, { desc = "Git commit" })
 
-keymap.set("i", "<C-n>", function()
-  require("copilot.suggestion").next()
-end, { desc = "Next Copilot suggestion" })
-
-keymap.set("i", "<C-p>", function()
-  require("copilot.suggestion").prev()
-end, { desc = "Previous Copilot suggestion" })
-
-keymap.set("i", "<C-e>", function()
-  require("copilot.suggestion").dismiss()
-end, { desc = "Dismiss Copilot suggestion" })
+-- Quick git add + commit
+keymap.set("n", "<leader>ca", function()
+  -- Add all and commit
+  vim.ui.input({ prompt = "Commit message (will add all): " }, function(msg)
+    if msg and msg ~= "" then
+      vim.fn.system("git add .")
+      local result = vim.fn.system(string.format('git commit -m "%s"', msg))
+      if vim.v.shell_error == 0 then
+        vim.notify("✅ Added & Committed: " .. msg, vim.log.levels.INFO)
+      else
+        vim.notify("❌ Commit failed: " .. result, vim.log.levels.ERROR)
+      end
+    end
+  end)
+end, { desc = "Git add all & commit" })

@@ -1,4 +1,6 @@
-vim.cmd("let g:netrw_liststyle = 3")
+-- Disable netrw completely (use nvim-tree instead)
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
 
 local opt = vim.opt
 

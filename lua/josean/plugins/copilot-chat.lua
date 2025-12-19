@@ -1,5 +1,6 @@
 return {
   "CopilotC-Nvim/CopilotChat.nvim",
+  enabled = false, -- Disable vì không còn Copilot
   branch = "main",
   dependencies = {
     "zbirenbaum/copilot.lua",

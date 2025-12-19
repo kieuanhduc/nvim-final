@@ -63,6 +63,9 @@ return {
 
     -- used to enable autocompletion (assign to every lsp server config)
     local capabilities = cmp_nvim_lsp.default_capabilities()
+    
+    -- Import lspconfig
+    local lspconfig = require("lspconfig") 
 
     vim.diagnostic.config({
       signs = {
@@ -75,11 +78,8 @@ return {
       },
     })
 
-    vim.lsp.config("*", {
+    lspconfig.svelte.setup({
       capabilities = capabilities,
-    })
-
-    vim.lsp.config("svelte", {
       on_attach = function(client, bufnr)
         vim.api.nvim_create_autocmd("BufWritePost", {
           pattern = { "*.js", "*.ts" },
@@ -91,19 +91,23 @@ return {
       end,
     })
 
-    vim.lsp.config("graphql", {
+    lspconfig.graphql.setup({
+      capabilities = capabilities,
       filetypes = { "graphql", "gql", "svelte", "typescriptreact", "javascriptreact" },
     })
 
-    vim.lsp.config("emmet_ls", {
+    lspconfig.emmet_ls.setup({
+      capabilities = capabilities,
       filetypes = { "html", "typescriptreact", "javascriptreact", "css", "sass", "scss", "less", "svelte" },
     })
 
-    vim.lsp.config("eslint", {
+    lspconfig.eslint.setup({
+      capabilities = capabilities,
       filetypes = { "html", "typescriptreact", "javascriptreact", "css", "sass", "scss", "less", "svelte" },
     })
 
-    vim.lsp.config("lua_ls", {
+    lspconfig.lua_ls.setup({
+      capabilities = capabilities,
       settings = {
         Lua = {
           -- make the language server recognize "vim" global
@@ -118,7 +122,8 @@ return {
     })
 
     -- Bash script support
-    vim.lsp.config("bashls", {
+    lspconfig.bashls.setup({
+      capabilities = capabilities,
       filetypes = { "sh", "bash", "zsh" },
       settings = {
         bashIde = {
@@ -127,10 +132,9 @@ return {
       },
     })
 
-    
-
     -- JSON support
-    vim.lsp.config("jsonls", {
+    lspconfig.jsonls.setup({
+      capabilities = capabilities,
       filetypes = { "json", "jsonc" },
       settings = {
         json = {
@@ -141,7 +145,8 @@ return {
     })
 
     -- YAML support
-    vim.lsp.config("yamlls", {
+    lspconfig.yamlls.setup({
+      capabilities = capabilities,
       filetypes = { "yaml", "yml" },
       settings = {
         yaml = {
@@ -163,7 +168,8 @@ return {
     })
 
     -- Docker support
-    vim.lsp.config("dockerls", {
+    lspconfig.dockerls.setup({
+      capabilities = capabilities,
       filetypes = { "dockerfile", "Dockerfile" },
     })
   end,

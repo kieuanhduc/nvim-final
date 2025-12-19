@@ -57,6 +57,38 @@ return {
 		name = "tokyonight",
 		priority = 999,
 		config = function()
+			-- Tokyo Night config để sync với WezTerm
+			require("tokyonight").setup({
+				style = "night", -- storm, moon, night
+				transparent = false, -- transparent background
+				terminal_colors = true, -- Configure terminal colors
+				styles = {
+					comments = { italic = true },
+					keywords = { italic = true },
+					functions = {},
+					variables = {},
+					sidebars = "dark", -- "dark", "transparent"
+					floats = "dark",
+				},
+				sidebars = { "qf", "help", "terminal", "packer" },
+				day_brightness = 0.3,
+				hide_inactive_statusline = false,
+				dim_inactive = false,
+				lualine_bold = true,
+				
+				-- Sync colors với WezTerm
+				on_colors = function(colors)
+					-- Keep tokyonight colors consistent
+					colors.bg = "#1a1b26"  -- Same as WezTerm bg
+					colors.bg_dark = "#16161e"
+					colors.bg_highlight = "#292e42"
+					colors.terminal_black = "#15161e"
+					colors.border = "#1d202f"
+					colors.fg = "#c0caf5"
+					colors.fg_dark = "#a9b1d6"
+				end,
+			})
+			
 			-- Set default theme
 			local themes = {
 				"tokyonight", -- for recording

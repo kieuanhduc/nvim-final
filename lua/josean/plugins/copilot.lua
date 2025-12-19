@@ -1,5 +1,6 @@
 return {
   "zbirenbaum/copilot.lua",
+  enabled = false, -- Disable vì không còn subscription
   cmd = "Copilot",
   build = ":Copilot auth",
   event = "InsertEnter",

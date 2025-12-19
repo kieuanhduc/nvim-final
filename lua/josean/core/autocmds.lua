@@ -97,20 +97,12 @@ autocmd("BufWritePre", {
   end,
 })
 
--- Shell syntax highlighting
+-- Shell script support (consolidated)
 autocmd({ "BufRead", "BufNewFile" }, {
   pattern = { "*.sh", "*.bash", "*.zsh", "*.fish", "*.csh", "*.tcsh", "*.ksh" },
   callback = function()
     vim.bo.filetype = "sh"
     vim.bo.shell = "bash"
-    
-    -- Force enable syntax highlighting
-    vim.cmd("syntax on")
-    vim.cmd("filetype on")
-    vim.cmd("filetype plugin on")
-    vim.cmd("filetype indent on")
-    
-    -- Set proper indentation
     vim.bo.expandtab = true
     vim.bo.tabstop = 4
     vim.bo.shiftwidth = 4
@@ -123,44 +115,13 @@ autocmd({ "BufRead", "BufNewFile" }, {
   end,
 })
 
--- Shebang detection
+-- Shebang detection (consolidated)
 autocmd({ "BufRead" }, {
   pattern = "*",
   callback = function()
     local first_line = vim.fn.getline(1)
     if string.match(first_line, "^#!.*bash") or string.match(first_line, "^#!.*sh") then
       vim.bo.filetype = "sh"
-      vim.cmd("syntax on")
-    end
-  end,
-})
-
--- Shell script support
-autocmd({ "BufRead", "BufNewFile" }, {
-  pattern = { "*.sh", "*.bash", "*.zsh", "*.fish", "*.csh", "*.tcsh" },
-  callback = function()
-    vim.bo.filetype = "sh"
-    vim.bo.expandtab = true
-    vim.bo.tabstop = 4
-    vim.bo.shiftwidth = 4
-    vim.bo.softtabstop = 4
-    vim.bo.commentstring = "# %s"
-    -- Force enable syntax highlighting
-    vim.cmd("syntax on")
-    vim.cmd("filetype on")
-    vim.cmd("filetype plugin on")
-    vim.cmd("filetype indent on")
-  end,
-})
-
--- Shebang detection
-autocmd({ "BufRead" }, {
-  pattern = "*",
-  callback = function()
-    local first_line = vim.fn.getline(1)
-    if string.match(first_line, "^#!.*bash") or string.match(first_line, "^#!.*sh") then
-      vim.bo.filetype = "sh"
-      vim.cmd("syntax on")
     end
   end,
 })

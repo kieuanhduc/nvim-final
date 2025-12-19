@@ -39,15 +39,36 @@ return {
       end
     end
 
+    -- Configure linters by filetype
+    -- Chỉ enable linters đã cài đặt để tránh errors
+    lint.linters_by_ft = {
+      -- javascript = { "eslint_d" },      -- Uncomment nếu đã cài eslint_d
+      -- typescript = { "eslint_d" },
+      -- python = { "pylint" },            -- Uncomment nếu đã cài pylint
+      -- lua = { "luacheck" },             -- Uncomment nếu đã cài luacheck
+      -- sh = { "shellcheck" },            -- Uncomment nếu đã cài shellcheck
+      
+      -- Để trống hoặc chỉ enable những cái đã cài
+      -- Check với: :Mason
+    }
+
     local function try_linting()
       local linters = lint.linters_by_ft[vim.bo.filetype]
 
-      -- if linters then
-      --   -- remove_linter_if_missing_config_file(linters, "eslint_d", ".eslintrc.cjs")
-      --   remove_linter_if_missing_config_file(linters, "eslint_d", "eslint.config.js")
-      -- end
+      -- Safe check: only lint if linters are defined
+      if not linters or #linters == 0 then
+        return
+      end
 
-      lint.try_lint(linters)
+      -- Pcall để catch errors
+      local ok, err = pcall(function()
+        lint.try_lint(linters)
+      end)
+      
+      if not ok then
+        -- Suppress error silently
+        -- vim.notify("Linting error: " .. tostring(err), vim.log.levels.WARN)
+      end
     end
 
     vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave" }, {
