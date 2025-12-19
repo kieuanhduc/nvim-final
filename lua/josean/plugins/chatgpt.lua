@@ -1,107 +1,114 @@
 return {
-  "jackMort/ChatGPT.nvim",
-  event = "VeryLazy",
-  dependencies = {
-    "MunifTanjim/nui.nvim",
-    "nvim-lua/plenary.nvim",
-    "folke/trouble.nvim",
-    "nvim-telescope/telescope.nvim",
-  },
-  config = function()
-    require("chatgpt").setup({
-      api_key_cmd = "echo $OPENAI_API_KEY",
-      yank_register = "+",
-      edit_with_instructions = {
-        diff = false,
-        keymaps = {
-          close = "<C-c>",
-          accept = "<C-y>",
-          toggle_diff = "<C-d>",
-          toggle_settings = "<C-o>",
-          cycle_windows = "<Tab>",
-          use_output_as_input = "<C-i>",
+  {
+    "olimorris/codecompanion.nvim",
+    event = "VeryLazy",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-telescope/telescope.nvim",
+    },
+
+    config = function()
+      require("codecompanion").setup({
+
+        ------------------------------------------------------------------
+        -- ADAPTER
+        ------------------------------------------------------------------
+        adapters = {
+          openai = function()
+            return require("codecompanion.adapters").extend("openai", {
+              env = {
+                api_key = "OPENAI_API_KEY",
+                url = "OPENAI_BASE_URL", -- Optional
+              },
+              schema = {
+                model = {
+                  default = "gpt-5-mini", -- Dùng model có sẵn
+                },
+                max_tokens = {
+                  default = 4096,
+                },
+                temperature = {
+                  default = 0.7,
+                },
+              },
+            })
+          end,
         },
-      },
-      chat = {
-        welcome_message = "🤖 ChatGPT Ready!",
-        loading_text = "Loading...",
-        question_sign = "👤",
-        answer_sign = "🤖",
-        max_line_length = 120,
-        sessions_window = {
-          border = {
-            style = "rounded",
-            text = { top = " Sessions " },
+
+        ------------------------------------------------------------------
+        -- STRATEGIES
+        ------------------------------------------------------------------
+        strategies = {
+          chat = { adapter = "openai" },
+          inline = { adapter = "openai" },
+        },
+
+        ------------------------------------------------------------------
+        -- DISPLAY (CHATGPT.NVIM STYLE)
+        ------------------------------------------------------------------
+        display = {
+          chat = {
+            window = {
+              layout = "float",
+              width = 0.90,
+              height = 0.90,
+              border = "rounded",
+              title = " 🤖 ChatGPT ",
+              title_pos = "center",
+
+              win_options = {
+                wrap = true,
+                linebreak = true,
+                number = false,
+                relativenumber = false,
+                signcolumn = "no",
+                cursorline = false,
+              },
+            },
+
+            -- Prefix giống ChatGPT.nvim
+            intro_message = "🤖 ChatGPT Ready!",
+            user_prefix = "👤 ",
+            assistant_prefix = "🤖 ",
+          },
+
+          ----------------------------------------------------------------
+          -- INPUT BOX (DƯỚI)
+          ----------------------------------------------------------------
+          input = {
+            window = {
+              border = "rounded",
+              title = " Prompt ",
+              title_pos = "center",
+            },
           },
         },
-        keymaps = {
-          close = { "<C-c>" },
-          yank_last = "<C-y>",
-          yank_last_code = "<C-k>",
-          scroll_up = "<C-u>",
-          scroll_down = "<C-d>",
-          new_session = "<C-n>",
-          cycle_windows = "<Tab>",
-          select_session = "<Space>",
-          rename_session = "r",
-          delete_session = "d",
+
+        ------------------------------------------------------------------
+        -- CHAT BEHAVIOR
+        ------------------------------------------------------------------
+        chat = {
+          render_headers = false, -- ❗ giống ChatGPT.nvim (ít tiêu đề)
+          show_token_count = false,
         },
-      },
-      popup_layout = {
-        default = "center",
-        center = {
-          width = "80%",
-          height = "80%",
-        },
-      },
-      popup_window = {
-        border = {
-          highlight = "FloatBorder",
-          style = "rounded",
-          text = { top = " ChatGPT " },
-        },
-        win_options = {
-          wrap = true,
-          linebreak = true,
-        },
-        buf_options = {
-          filetype = "markdown",
-        },
-      },
-      openai_params = {
-        model = "gpt-5-mini", -- Dùng model có sẵn trong API của bạn
-        frequency_penalty = 0,
-        presence_penalty = 0,
-        max_tokens = 4096,
-        temperature = 0.7,
-        top_p = 1,
-        n = 1,
-      },
-      openai_edit_params = {
-        model = "gpt-5-mini", -- Dùng model có sẵn
-        frequency_penalty = 0,
-        presence_penalty = 0,
-        temperature = 0,
-        top_p = 1,
-        n = 1,
-      },
-    })
-  end,
-  keys = {
-    -- Main chat
-    { "<leader>ai", "<cmd>ChatGPT<cr>", desc = "ChatGPT: Open chat", mode = "n" },
-    { "<leader>ae", "<cmd>ChatGPTEditWithInstructions<cr>", desc = "ChatGPT: Edit with instructions", mode = { "n", "v" } },
-    
-    -- Quick actions
-    { "<leader>ax", "<cmd>ChatGPTRun explain_code<cr>", desc = "ChatGPT: Explain code", mode = { "n", "v" } },
-    { "<leader>af", "<cmd>ChatGPTRun fix_bugs<cr>", desc = "ChatGPT: Fix bugs", mode = { "n", "v" } },
-    { "<leader>ao", "<cmd>ChatGPTRun optimize_code<cr>", desc = "ChatGPT: Optimize code", mode = { "n", "v" } },
-    { "<leader>ag", "<cmd>ChatGPTRun grammar_correction<cr>", desc = "ChatGPT: Grammar", mode = { "n", "v" } },
-    { "<leader>at", "<cmd>ChatGPTRun translate<cr>", desc = "ChatGPT: Translate", mode = { "n", "v" } },
-    { "<leader>ad", "<cmd>ChatGPTRun docstring<cr>", desc = "ChatGPT: Docstring", mode = { "n", "v" } },
-    { "<leader>aa", "<cmd>ChatGPTRun add_tests<cr>", desc = "ChatGPT: Add tests", mode = { "n", "v" } },
-    { "<leader>as", "<cmd>ChatGPTRun summarize<cr>", desc = "ChatGPT: Summarize", mode = { "n", "v" } },
-    { "<leader>al", "<cmd>ChatGPTRun code_readability_analysis<cr>", desc = "ChatGPT: Readability", mode = { "n", "v" } },
+      })
+
+      --------------------------------------------------------------------
+      -- KEYMAPS (Y CHANG CHATGPT.NVIM)
+      --------------------------------------------------------------------
+      local map = vim.keymap.set
+      local opts = { noremap = true, silent = true }
+
+    end,
+    keys = {
+      -- Main chat
+      { "<leader>ai", "<cmd>CodeCompanionChat<cr>", desc = "AI: Chat", mode = "n" },
+      { "<leader>at", "<cmd>CodeCompanionChat Toggle<cr>", desc = "AI: Toggle", mode = "n" },
+      { "<leader>aa", "<cmd>CodeCompanionActions<cr>", desc = "AI: Actions menu", mode = { "n", "v" } },
+      
+      -- Inline với selected code - ĐÂY LÀ CÁCH ĐÚNG!
+      { "<leader>ae", "<cmd>CodeCompanion<cr>", desc = "AI: Inline (type prompt)", mode = { "n", "v" } },
+      { "<leader>ax", "<cmd>CodeCompanionActions<cr>", desc = "AI: Explain/Actions", mode = { "n", "v" } },
+    },
   },
 }
-
